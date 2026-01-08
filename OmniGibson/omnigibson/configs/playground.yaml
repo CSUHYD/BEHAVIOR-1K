@@ -129,20 +129,20 @@ objects:
 
 # objects: []
 
-# task:
-#   type: BehaviorTask
-#   activity_name: picking_up_trash
-#   activity_definition_id: 0
-#   activity_instance_id: 0
-#   predefined_problem: null
-#   online_object_sampling: true
-#   debug_object_sampling: null
-#   highlight_task_relevant_objects: false
-#   use_presampled_robot_pose: false
-#   termination_config:
-#     max_steps: 500
-#   reward_config:
-#     r_potential: 1.0
-
 task:
-  type: DummyTask
+  type: BehaviorTask
+  activity_name: picking_up_trash
+  activity_definition_id: 0
+  activity_instance_id: 0
+  predefined_problem: null
+  online_object_sampling: false
+  debug_object_sampling: null
+  highlight_task_relevant_objects: false
+  use_presampled_robot_pose: true
+  termination_config:
+    max_steps: 500
+  reward_config:
+    r_potential: 1.0
+
+# task:
+#   type: DummyTask

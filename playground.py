@@ -120,7 +120,7 @@ def run_can_into_ashcan(env, robot):
     ashcan_obj = ashcan_objs[0] if ashcan_objs else None
     if not can_objs or ashcan_obj is None:
         raise RuntimeError("Expected at least one can object and an ashcan/trash can to exist in the scene.")
-    for can_obj in can_objs[:-1]:
+    for can_obj in can_objs:
         print(f"Executing grasp for {can_obj.name}")
         execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.GRASP, can_obj), env)
         print(f"Executing place_inside for {can_obj.name} into {ashcan_obj.name}")

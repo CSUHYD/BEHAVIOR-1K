@@ -1,0 +1,148 @@
+scene:
+  type: InteractiveTraversableScene
+  scene_model: house_double_floor_lower
+  trav_map_resolution: 0.1
+  default_erosion_radius: 0.0
+  trav_map_with_objects: true
+  num_waypoints: 1
+  waypoint_resolution: 0.2
+  not_load_object_categories: null
+  load_room_types: ["living_room", "kitchen"]
+  load_room_instances: null
+  seg_map_resolution: 1.0
+  scene_source: OG
+  include_robots: true
+
+# scene:
+#   type: Scene
+  
+robots:
+  - type: Tiago
+    obs_modalities: [rgb]
+    include_sensor_names: null
+    exclude_sensor_names: null
+    scale: 1.0
+    self_collisions: true
+    action_normalize: false
+    action_type: continuous
+    grasping_mode: sticky
+    reset_joint_pos: [
+      0.0000,
+      0.0000,
+      -0.0000,
+      -0.0000,
+      -0.0000,
+      -0.0000,
+      0.3500,
+      0.9052,
+      0.9052,
+      0.0000,
+      -0.4281,
+      -0.4281,
+      -0.4500,
+      2.2350,
+      2.2350,
+      1.6463,
+      1.6463,
+      0.7687,
+      0.7687,
+      -0.7946,
+      -0.7946,
+      -1.0891,
+      -1.0891,
+      0.0450,
+      0.0450,
+      0.0450,
+      0.0450,
+    ]
+    sensor_config:
+      VisionSensor:
+        sensor_kwargs:
+          image_height: 128
+          image_width: 128
+    controller_config:
+      base:
+        name: HolonomicBaseJointController
+        motor_type: position
+        command_input_limits: null
+        use_impedances: false
+      trunk:
+        name: JointController
+        motor_type: position
+        command_input_limits: null
+        use_delta_commands: false
+        use_impedances: false
+      arm_left:
+        name: JointController
+        motor_type: position
+        command_input_limits: null
+        use_delta_commands: false
+        use_impedances: False
+      arm_right:
+        name: JointController
+        motor_type: position
+        command_input_limits: null
+        use_delta_commands: false
+        use_impedances: false
+      gripper_left:
+        name: JointController
+        motor_type: position
+        command_input_limits: null
+        use_delta_commands: false
+        use_impedances: false
+      gripper_right:
+        name: JointController
+        motor_type: position
+        command_input_limits: null
+        use_delta_commands: false
+        use_impedances: false
+      camera:
+        name: JointController
+        motor_type: position
+        command_input_limits: null
+        use_delta_commands: false
+        use_impedances: false
+        
+objects:
+  - type: DatasetObject
+    name: table
+    category: breakfast_table
+    model: lcsizg
+    bounding_box: [0.5, 0.5, 0.8]
+    fixed_base: true
+    position: [4.7, 4.2, 0.6]
+    orientation: [0, 0, 0.707, 0.707]
+  - type: DatasetObject
+    name: chair
+    category: straight_chair
+    model: amgwaw
+    bounding_box: null
+    fixed_base: false
+    position: [5.3, 5.3, 0.6]
+    orientation: [0, 0, -0.9990215, -0.0442276]
+  - type: PrimitiveObject
+    name: box
+    primitive_type: Cube
+    rgba: [1.0, 0, 0, 1.0]
+    size: 0.05
+    position: [4.7, 4.2, 0.6]
+
+# objects: []
+
+# task:
+#   type: BehaviorTask
+#   activity_name: picking_up_trash
+#   activity_definition_id: 0
+#   activity_instance_id: 0
+#   predefined_problem: null
+#   online_object_sampling: true
+#   debug_object_sampling: null
+#   highlight_task_relevant_objects: false
+#   use_presampled_robot_pose: false
+#   termination_config:
+#     max_steps: 500
+#   reward_config:
+#     r_potential: 1.0
+
+task:
+  type: DummyTask

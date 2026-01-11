@@ -7,7 +7,6 @@ import torch as th
 
 import omnigibson as og
 from omnigibson import object_states
-from omnigibson.macros import gm
 from omnigibson.sensors import VisionSensor
 from omnigibson.utils.ui_utils import KeyboardRobotController, choose_from_options
 from omnigibson.action_primitives.action_primitive_set_base import ActionPrimitiveErrorGroup
@@ -16,10 +15,120 @@ from omnigibson.action_primitives.symbolic_semantic_action_primitives import (
     SymbolicSemanticActionPrimitiveSet,
 )
 from omnigibson.metrics.task_metric import TaskMetric
+from omnigibson.utils.bddl_utils import OBJECT_TAXONOMY
+from bddl3.bddl.action_translator import BDDLActionTranslator, ACTION_ENUM_DEFAULT
 
 # Don't use GPU dynamics and Use flatcache for performance boost
 # gm.USE_GPU_DYNAMICS = False
 # gm.ENABLE_FLATCACHE = True
+
+
+def _print_task_action_plan(
+    behavior_activity: str = "picking_up_trash", activity_definition: int = 0
+):
+    """
+    Parse a BDDL task and print the grounded action plans.
+    """
+
+    translator = BDDLActionTranslator(action_enum=ACTION_ENUM_DEFAULT)
+    plans = translator.translate(
+        behavior_activity=behavior_activity, activity_definition=activity_definition
+    )
+    print(f"Action plans for task '{behavior_activity}' (definition {activity_definition}): {len(plans)} option(s)")
+    if not plans:
+        return
+
+    for idx, plan in enumerate(plans, 1):
+        print(f"  Plan {idx}:")
+        for line in plan.to_strings():
+            print(f"    - {line}")
+
+
+
+
+def translate_task_plans(
+    behavior_activity: str, activity_definition: int, action_enum=SymbolicSemanticActionPrimitiveSet
+):
+    """
+    Translate a BDDL task into grounded action plans using the requested primitive enum.
+    """
+
+    translator = BDDLActionTranslator(action_enum=action_enum)
+    return translator.translate(
+        behavior_activity=behavior_activity, activity_definition=activity_definition
+    )
+
+
+def _find_objects(env, task, bddl_inst: str):
+    """
+    Resolve a BDDL instance name to a scene object using resolve_bddl_instance.
+    Returns the resolved BaseObject / BaseSystem.
+    """
+
+    mapping, missing = resolve_bddl_instance(env, task, bddl_inst)
+    if missing:
+        raise RuntimeError(f"Failed to resolve BDDL instance '{bddl_inst}'.")
+    return mapping[bddl_inst]
+
+
+def resolve_bddl_instance(env, task, bddl_inst: str = None):
+    """
+    解析 task BDDL 中所有相关物体（或指定单个实例）。
+    返回 (mapping, missing)，其中 mapping 为 {bddl_inst: entity}。
+    解析顺序：
+    1) task.object_scope
+    2) task metadata 的 inst_to_name
+    3) synset -> category 映射
+    """
+
+    def _resolve_one(inst):
+        if hasattr(task, "object_scope") and inst in task.object_scope:
+            entity = task.object_scope[inst]
+            if entity.exists:
+                return entity.wrapped_obj
+
+        inst_to_name = env.scene.get_task_metadata(key="inst_to_name")
+        if inst_to_name and inst in inst_to_name:
+            name = inst_to_name[inst]
+            if name in env.scene.available_systems:
+                return env.scene.get_system(name)
+            obj = env.scene.object_registry("name", name)
+            if obj is not None:
+                return obj
+
+        synset = "_".join(inst.split("_")[:-1])
+        try:
+            categories = OBJECT_TAXONOMY.get_categories(synset)
+        except Exception:
+            categories = []
+        for category in categories:
+            objs = env.scene.object_registry("category", category, [])
+            if objs:
+                return objs[0]
+        return None
+
+    if bddl_inst is not None:
+        entity = _resolve_one(bddl_inst)
+        mapping = {bddl_inst: entity} if entity is not None else {}
+        missing = [] if entity is not None else [bddl_inst]
+        return mapping, missing
+
+    if hasattr(task, "object_scope") and task.object_scope:
+        instances = list(task.object_scope.keys())
+    else:
+        inst_to_name = env.scene.get_task_metadata(key="inst_to_name") or {}
+        instances = list(inst_to_name.keys())
+
+    mapping = {}
+    missing = []
+    for inst in instances:
+        entity = _resolve_one(inst)
+        if entity is None:
+            missing.append(inst)
+        else:
+            mapping[inst] = entity
+    return mapping, missing
+
 
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
@@ -28,7 +137,21 @@ def execute_controller(ctrl_gen, env):
 
 def _open_if_needed(container, controller, env):
     if object_states.Open in container.states and not container.states[object_states.Open].get_value():
-        execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.OPEN, container), env)
+        execute_controller(
+            controller.apply_ref(SymbolicSemanticActionPrimitiveSet.OPEN, container),
+            env,
+        )
+
+def place_inside_with_retries(container, controller, env):
+    _open_if_needed(container, controller, env)
+    try:
+        execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.PLACE_ON_TOP, container), env)
+        return
+    except ActionPrimitiveErrorGroup:
+        pass
+
+    if not _fallback_teleport_inside(container, controller):
+        raise RuntimeError(f"Failed to place object inside {container.name}.")
 
 
 def _fallback_teleport_inside(container, controller) -> bool:
@@ -45,54 +168,48 @@ def _fallback_teleport_inside(container, controller) -> bool:
     target_xy = (lower[:2] + upper[:2]) / 2.0
     rim_z = float(upper[2])
     floor_z = float(lower[2])
-    target_z = min(rim_z - 0.02, max(floor_z + held_height * 0.5, rim_z - held_height * 0.8))
+    target_z = min(rim_z - 0.02, max(floor_z + held_height * 0.5, rim_z - held_height * 0.8)) + 0.5
     target_pos = [float(target_xy[0]), float(target_xy[1]), target_z]
 
     held.set_position_orientation(position=target_pos, orientation=[0, 0, 0, 1])
-    og.sim.step()
+    for i in range(100):
+        og.sim.step()
     return bool(held.states[object_states.Inside].get_value(container))
 
 
-def place_inside_with_retries(container, controller, env):
-    _open_if_needed(container, controller, env)
-    try:
-        execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.PLACE_ON_TOP, container), env)
-        return
-    except ActionPrimitiveErrorGroup:
-        pass
 
-    if not _fallback_teleport_inside(container, controller):
-        raise RuntimeError(f"Failed to place object inside {container.name}.")
+def execute_action_plan(env, robot, plan):
+    """
+    Execute a grounded action plan using symbolic semantic primitives.
+    """
 
-
-def _find_objects(scene, obj_type):
-    obj_type = (obj_type or "").lower()
-    if obj_type == "can":
-        include_tags = ("can",)
-        exclude_tags = ("ashcan", "trash", "trash_can", "trashcan")
-    elif obj_type == "ashcan":
-        include_tags = ("ashcan", "trash", "trash_can", "trashcan")
-        exclude_tags = ()
-    else:
-        raise ValueError(f"Unsupported obj_type: {obj_type}")
-
-    matches = []
-    for obj in scene.objects:
-        name = (obj.name or "").lower()
-        category = (getattr(obj, "category", "") or "").lower()
-        if any(tag in name or tag in category for tag in include_tags):
-            if any(tag in name or tag in category for tag in exclude_tags):
-                continue
-            matches.append(obj)
-    return matches
-
-
-def run_symbolic_grasp(env, robot, grasp_obj, target_obj):
     controller = SymbolicSemanticActionPrimitives(env, robot)
-    print(f"Executing grasp for {grasp_obj.name}")
-    execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.GRASP, grasp_obj), env)
-    print(f"Executing place_on_top for {grasp_obj.name} onto {target_obj.name}")
-    execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.PLACE_ON_TOP, target_obj), env)
+    for step in plan.steps:
+        prim = step.primitive
+        if prim == SymbolicSemanticActionPrimitiveSet.GRASP:
+            obj = _find_objects(env, env.task, step.primary_object)
+            print(f"Executing grasp for {obj.name}")
+            execute_controller(controller.apply_ref(prim, obj), env)
+        elif prim == SymbolicSemanticActionPrimitiveSet.PLACE_INSIDE:
+            if not step.reference_object:
+                raise RuntimeError("PLACE_INSIDE requires reference_object.")
+            obj = _find_objects(env, env.task, step.primary_object)
+            ref_obj = _find_objects(env, env.task, step.reference_object)
+            print(f"Executing place_inside for {obj.name} into {ref_obj.name}")
+            place_inside_with_retries(ref_obj, controller, env)
+        elif prim == SymbolicSemanticActionPrimitiveSet.PLACE_ON_TOP:
+            if not step.reference_object:
+                raise RuntimeError("PLACE_ON_TOP requires reference_object.")
+            obj = _find_objects(env, env.task, step.primary_object)
+            ref_obj = _find_objects(env, env.task, step.reference_object)
+            print(f"Executing place_on_top for {obj.name} onto {ref_obj.name}")
+            execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.PLACE_ON_TOP, ref_obj), env)
+        elif prim in (SymbolicSemanticActionPrimitiveSet.OPEN, SymbolicSemanticActionPrimitiveSet.CLOSE):
+            obj = _find_objects(env, env.task, step.primary_object)
+            print(f"Executing {prim.name.lower()} for {obj.name}")
+            execute_controller(controller.apply_ref(prim, obj), env)
+        else:
+            raise RuntimeError(f"Unsupported primitive for execution: {prim}")
 
 
 def run_keyboard_grasp(env, robot, random_selection=False, short_exec=False):
@@ -113,30 +230,52 @@ def run_keyboard_grasp(env, robot, random_selection=False, short_exec=False):
         step += 1
 
 
-def run_can_into_ashcan(env, robot):
-    controller = SymbolicSemanticActionPrimitives(env, robot)
-    can_objs = _find_objects(env.scene, "can")
-    ashcan_objs = _find_objects(env.scene, "ashcan")
-    ashcan_obj = ashcan_objs[0] if ashcan_objs else None
-    if not can_objs or ashcan_obj is None:
-        raise RuntimeError("Expected at least one can object and an ashcan/trash can to exist in the scene.")
-    for can_obj in can_objs:
-        print(f"Executing grasp for {can_obj.name}")
-        execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.GRASP, can_obj), env)
-        print(f"Executing place_inside for {can_obj.name} into {ashcan_obj.name}")
-        place_inside_with_retries(ashcan_obj, controller, env)
+def run_task_mode(
+    env,
+    robot,
+    behavior_activity: str,
+    activity_definition: int = 0,
+    random_selection: bool = False,
+    short_exec: bool = False,
+):
+    """
+    Generic task runner: print a grounded plan, execute a grounded plan, or fall back to keyboard teleop.
+    """
 
-
-def run_grasp_mode(env, robot, random_selection=False, short_exec=False):
     mode = choose_from_options(
-        options=["symbolic", "keyboard"],
-        name="grasp mode"
+        options=["print_plan", "execute_plan", "keyboard"],
+        name="task mode",
     )
 
-    if mode == "symbolic":
-        run_can_into_ashcan(env, robot)
-    else:
-        run_keyboard_grasp(env, robot, random_selection=random_selection, short_exec=short_exec)
+    if mode == "print_plan":
+        _print_task_action_plan(behavior_activity, activity_definition)
+        return
+
+    if mode == "execute_plan":
+        plans = translate_task_plans(
+            behavior_activity=behavior_activity,
+            activity_definition=activity_definition,
+            action_enum=SymbolicSemanticActionPrimitiveSet,
+        )
+        if not plans:
+            print("No grounded plans found for this task.")
+            return
+        # 场景加载完成后，报告已加载物体，以及是否包含任务相关名称
+        relevant_names = set()
+        for plan in plans:
+            for step in plan.steps:
+                relevant_names.add(step.primary_object)
+                if step.reference_object:
+                    relevant_names.add(step.reference_object)
+        print(f"Executing all {len(plans)} grounded plan(s):")
+        for idx, plan_to_run in enumerate(plans, 1):
+            print(f"Plan {idx}:")
+            for line in plan_to_run.to_strings():
+                print(f"  - {line}")
+            execute_action_plan(env, robot, plan_to_run)
+        return
+
+    run_keyboard_grasp(env, robot, random_selection=random_selection, short_exec=short_exec)
 
 
 def run_with_task_metric(env, run_fn):
@@ -149,10 +288,16 @@ def run_with_task_metric(env, run_fn):
     return task_metric
 
 
-def main(random_selection=False, headless=False, short_exec=False):
+def main(
+    random_selection=False,
+    headless=False,
+    short_exec=False,
+    behavior_activity: str = "picking_up_trash",
+    activity_definition: int = 0,
+):
     """
-    Robot grasping mode demo with selection
-    Queries the user to select a type of grasping mode
+    Task-aware robot demo. Prints the BDDL-derived action plan, then lets you print/execute it
+    or drive manually via keyboard teleop.
     """
     og.log.info(f"Demo {__file__}\n    " + "*" * 80 + "\n    Description:\n" + main.__doc__ + "*" * 80)
 
@@ -182,6 +327,14 @@ def main(random_selection=False, headless=False, short_exec=False):
     env.scene.update_initial_file()
     env.scene.reset()
 
+    # Test resolve_bddl_instance: resolve all task-relevant objects
+    mapping, missing = resolve_bddl_instance(env, env.task)
+    print(f"[resolve_bddl_instance] Resolved {len(mapping)} objects, missing {len(missing)}")
+    for inst, entity in mapping.items():
+        print(f"  {inst} -> {getattr(entity, 'name', entity)}")
+    if missing:
+        print(f"  Missing: {missing}")
+
     # Make the robot's camera(s) high-res
     for sensor in robot.sensors.values():
         if isinstance(sensor, VisionSensor):
@@ -196,7 +349,14 @@ def main(random_selection=False, headless=False, short_exec=False):
 
     run_with_task_metric(
         env,
-        lambda: run_grasp_mode(env, robot, random_selection=random_selection, short_exec=short_exec),
+        lambda: run_task_mode(
+            env,
+            robot,
+            behavior_activity=behavior_activity,
+            activity_definition=activity_definition,
+            random_selection=random_selection,
+            short_exec=short_exec,
+        ),
     )
 
     # Always shut down the environment cleanly at the end

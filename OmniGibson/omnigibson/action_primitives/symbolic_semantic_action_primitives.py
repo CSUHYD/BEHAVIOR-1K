@@ -235,6 +235,18 @@ class SymbolicSemanticActionPrimitives(StarterSemanticActionPrimitives):
                 },
             )
 
+    def _place_on_top(self, obj):
+        """
+        Yields action for the robot to place an object on top of @obj.
+
+        Args:
+            obj (StatefulObject): Object for robot to place the object in its hand on
+
+        Returns:
+            th.tensor or None: Action array for one step for the robot to place or None if place completed
+        """
+        yield from self._place_with_predicate(obj, object_states.OnTop)
+
     def _place_with_predicate(self, obj, predicate, near_poses=None, near_poses_threshold=None):
         """
         Yields action for the robot to navigate to the object if needed, then to place it

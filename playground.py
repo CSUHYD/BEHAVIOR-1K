@@ -145,7 +145,7 @@ def _open_if_needed(container, controller, env):
 def place_inside_with_retries(container, controller, env):
     _open_if_needed(container, controller, env)
     try:
-        execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.PLACE_ON_TOP, container), env)
+        execute_controller(controller.apply_ref(SymbolicSemanticActionPrimitiveSet.PLACE_INSIDE, container), env)
         return
     except ActionPrimitiveErrorGroup:
         pass

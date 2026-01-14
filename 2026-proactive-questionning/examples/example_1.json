@@ -1,0 +1,38 @@
+{
+  "problem": "tidying_living_room-0",
+  "persona": "minimalist_aesthetic",
+  "persona_description": "A visually driven minimalist who prioritizes openness, simplicity, and clean sightlines. This user prefers items to be removed from the floor but dislikes overusing storage furniture, favoring accessible and visually balanced arrangements over strict categorization.",
+  "objects": {
+    "pot_plant.n.01_1": "pot_plant.n.01",
+    "floor.n.01_1": "floor.n.01",
+    "newspaper.n.03_1": "newspaper.n.03",
+    "letter.n.01_1": "letter.n.01",
+    "book.n.02_1": "book.n.02",
+    "coffee_table.n.01_1": "coffee_table.n.01",
+    "bookcase.n.01_1": "bookcase.n.01",
+    "agent.n.01_1": "agent.n.01"
+  },
+  "init": [
+    "(ontop pot_plant.n.01_1 floor.n.01_1)",
+    "(ontop newspaper.n.03_1 floor.n.01_1)",
+    "(ontop letter.n.01_1 floor.n.01_1)",
+    "(ontop book.n.02_1 floor.n.01_1)",
+    "(inroom floor.n.01_1 living_room)",
+    "(inroom coffee_table.n.01_1 living_room)",
+    "(inroom bookcase.n.01_1 living_room)",
+    "(ontop agent.n.01_1 floor.n.01_1)"
+  ],
+  "perference": [
+    "Items should be removed from the floor to make the living room look clean and open.",
+    "Decorative objects such as plants should be displayed on visible furniture surfaces.",
+    "Lightweight paper items should remain easily accessible rather than hidden away.",
+    "The living room should prioritize visual simplicity over dense storage.",
+    "Storage furniture should be used minimally to avoid a cluttered appearance."
+  ],
+  "goal": [
+    "(ontop pot_plant.n.01_1 coffee_table.n.01_1)",
+    "(ontop newspaper.n.03_1 coffee_table.n.01_1)",
+    "(ontop letter.n.01_1 coffee_table.n.01_1)",
+    "(inside book.n.02_1 bookcase.n.01_1)"
+  ]
+}

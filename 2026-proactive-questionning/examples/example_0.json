@@ -1,0 +1,38 @@
+{
+  "problem": "tidying_living_room-0",
+  "persona": "organized_scholar",
+  "persona_description": "An academically minded and highly organized person who values systematic categorization and long-term order. This user prefers that reading and paper materials are carefully stored, the environment is uncluttered, and the living room supports focused activities such as reading or studying.",
+  "objects": {
+    "pot_plant.n.01_1": "pot_plant.n.01",
+    "floor.n.01_1": "floor.n.01",
+    "newspaper.n.03_1": "newspaper.n.03",
+    "letter.n.01_1": "letter.n.01",
+    "book.n.02_1": "book.n.02",
+    "coffee_table.n.01_1": "coffee_table.n.01",
+    "bookcase.n.01_1": "bookcase.n.01",
+    "agent.n.01_1": "agent.n.01"
+  },
+  "init": [
+    "(ontop pot_plant.n.01_1 floor.n.01_1)",
+    "(ontop newspaper.n.03_1 floor.n.01_1)",
+    "(ontop letter.n.01_1 floor.n.01_1)",
+    "(ontop book.n.02_1 floor.n.01_1)",
+    "(inroom floor.n.01_1 living_room)",
+    "(inroom coffee_table.n.01_1 living_room)",
+    "(inroom bookcase.n.01_1 living_room)",
+    "(ontop agent.n.01_1 floor.n.01_1)"
+  ],
+  "perference": [
+    "All reading and paper materials should be systematically stored in the bookcase.",
+    "Books, newspapers, and letters should not be left on the floor after tidying.",
+    "The bookcase is the designated storage location for written materials in the living room.",
+    "Decorative items should be placed on furniture surfaces rather than on the floor.",
+    "The living room should appear orderly and suitable for reading or studying."
+  ],
+  "goal": [
+    "(ontop pot_plant.n.01_1 coffee_table.n.01_1)",
+    "(inside newspaper.n.03_1 bookcase.n.01_1)",
+    "(inside letter.n.01_1 bookcase.n.01_1)",
+    "(inside book.n.02_1 bookcase.n.01_1)"
+  ]
+}

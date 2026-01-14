@@ -2,7 +2,10 @@ gha-creds-*.json
 /site
 .vscode
 .DS_Store
-datasets/
+datasets/2025-challenge-task-instances
+datasets/behavior-1k-assets
+datasets/omnigibson-robot-assets
+
 # training
 outputs/
 /*.ipynb

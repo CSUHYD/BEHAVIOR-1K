@@ -1,0 +1,209 @@
+[
+  {
+    "task": "organize_fridge",
+    "objects": {
+      "fresh_milk.n.01_1": "milk_jug.n.01",
+      "fresh_milk.n.01_2": "milk_jug.n.01",
+      "coconut_juice.n.01_1": "juice_bottle.n.01",
+      "water_bottle_plastic.n.01_1": "water_bottle.n.01",
+      "water_bottle_glass.n.01_1": "water_bottle.n.01",
+      "small_yogurt_drink.n.01_1": "yogurt_drink.n.01",
+      "small_yogurt_drink.n.01_2": "yogurt_drink.n.01",
+      "small_yogurt_drink.n.01_3": "yogurt_drink.n.01",
+      "boxed_yogurt.n.01_1": "milk_carton.n.01",
+      "boxed_milk.n.01_1": "milk_carton.n.01",
+      "milk_cap_bottle.n.01_1": "milk_bottle.n.01",
+      "cola_can.n.01_1": "cola_can.n.01",
+      "cola_can.n.01_2": "cola_can.n.01",
+      "small_juice.n.01_1": "juice_bottle.n.01",
+      "hair_mud.n.01_1": "cosmetic_container.n.01",
+      "chocolate.n.01_1": "snack_bar.n.01",
+      "ramen_pack.n.01_1": "food_pack.n.01",
+      "ramen_pack.n.01_2": "food_pack.n.01",
+      "vinegar_bottle.n.01_1": "condiment_bottle.n.01",
+      "hotpot_seasoning.n.01_1": "food_pack.n.01",
+      "chili_sauce_jar.n.01_1": "condiment_jar.n.01",
+      "chili_sauce_jar.n.01_2": "condiment_jar.n.01",
+      "lemon.n.01_1": "lemon.n.01",
+      "lemon.n.01_2": "lemon.n.01",
+      "corn.n.01_1": "corn.n.01",
+      "orange.n.01_1": "citrus_fruit.n.01",
+      "tomato.n.01_1": "tomato.n.01",
+      "corn.n.01_2": "corn.n.01",
+      "pear.n.01_1": "pear.n.01",
+      "avocado.n.01_1": "avocado.n.01"
+    },
+    "receptacles": {
+      "fridge_shelf_top": "fridge_shelf",
+      "fridge_shelf_mid": "fridge_shelf",
+      "fridge_shelf_bottom": "fridge_shelf",
+      "fridge_drawer_left": "fridge_drawer",
+      "fridge_drawer_right": "fridge_drawer",
+      "door_left_bin_top": "fridge_door_bin",
+      "door_left_bin_mid": "fridge_door_bin",
+      "door_left_bin_bottom": "fridge_door_bin",
+      "door_right_bin_top": "fridge_door_bin",
+      "door_right_bin_mid": "fridge_door_bin",
+      "door_right_bin_bottom": "fridge_door_bin"
+    },
+    "init": [
+      "(inside fresh_milk.n.01_1 fridge_shelf_mid)",
+      "(inside fresh_milk.n.01_2 door_right_bin_bottom)",
+      "(inside coconut_juice.n.01_1 fridge_shelf_top)",
+      "(inside water_bottle_plastic.n.01_1 fridge_shelf_bottom)",
+      "(inside water_bottle_glass.n.01_1 door_left_bin_mid)",
+      "(inside small_yogurt_drink.n.01_1 fridge_shelf_mid)",
+      "(inside small_yogurt_drink.n.01_2 door_left_bin_top)",
+      "(inside small_yogurt_drink.n.01_3 door_right_bin_top)",
+      "(inside boxed_yogurt.n.01_1 fridge_shelf_bottom)",
+      "(inside boxed_milk.n.01_1 fridge_shelf_mid)",
+      "(inside milk_cap_bottle.n.01_1 door_right_bin_mid)",
+      "(inside cola_can.n.01_1 fridge_shelf_mid)",
+      "(inside cola_can.n.01_2 door_right_bin_mid)",
+      "(inside small_juice.n.01_1 fridge_shelf_top)",
+      "(inside hair_mud.n.01_1 door_right_bin_top)",
+      "(inside chocolate.n.01_1 fridge_shelf_top)",
+      "(inside ramen_pack.n.01_1 fridge_shelf_mid)",
+      "(inside ramen_pack.n.01_2 door_left_bin_bottom)",
+      "(inside vinegar_bottle.n.01_1 door_left_bin_mid)",
+      "(inside hotpot_seasoning.n.01_1 fridge_shelf_bottom)",
+      "(inside chili_sauce_jar.n.01_1 fridge_shelf_mid)",
+      "(inside chili_sauce_jar.n.01_2 door_right_bin_bottom)",
+      "(inside lemon.n.01_1 fridge_drawer_left)",
+      "(inside lemon.n.01_2 fridge_shelf_bottom)",
+      "(inside corn.n.01_1 fridge_drawer_right)",
+      "(inside orange.n.01_1 fridge_drawer_left)",
+      "(inside tomato.n.01_1 fridge_shelf_bottom)",
+      "(inside corn.n.01_2 fridge_drawer_left)",
+      "(inside pear.n.01_1 fridge_drawer_right)",
+      "(inside avocado.n.01_1 fridge_shelf_mid)"
+    ],
+    "qa_history": [
+      {
+        "turn_id": 1,
+        "question": "Do you prefer to keep dairy products together or scattered throughout the fridge?",
+        "answer": "I prefer to keep dairy products together for easier access and organization. Let's move the milk, yogurt, and milk cartons to the door bins and shelves in the middle."
+      },
+      {
+        "turn_id": 2,
+        "question": "Would you like to prioritize keeping drinks on the top shelf or having them distributed throughout the fridge?",
+        "answer": "I prefer a mix, but with drinks mainly on the top shelf for easy access. Let's keep the coconut juice, small juice, and chocolate on the middle shelf, and place the water bottles, milk jugs, and yogurt drinks in the door bins."
+      },
+      {
+        "turn_id": 3,
+        "question": "Do you prefer to keep fruits and vegetables separate from other food items or grouped together with them?",
+        "answer": "I prefer to keep fruits and vegetables separate for better organization. Let's group the lemons, oranges, tomatoes, corn, pears, and avocados in the fridge drawer, and place the rest of the food items on the shelves."
+      },
+      {
+        "turn_id": 4,
+        "question": "Do you prefer to keep carbonated drinks like cola cans together or mixed with other beverages?",
+        "answer": "Let's keep the cola cans together for easier access. Place them on the top shelf along with the coconut juice and small juice bottles."
+      },
+      {
+        "turn_id": 5,
+        "question": "Would you like to prioritize having similar types of food grouped together or have a more varied arrangement throughout the fridge?",
+        "answer": "I prefer to have similar types of food grouped together for easier organization. Let's keep dairy products, drinks, fruits, vegetables, and other items in their respective sections as per my previous preferences."
+      },
+      {
+        "turn_id": 6,
+        "question": "Do you prefer to keep condiments like vinegar and chili sauce together or scattered with other food items?",
+        "answer": "Let's keep the condiments together for easier access. Place the vinegar bottle and chili sauces on the bottom shelf, along with the hotpot seasoning."
+      },
+      {
+        "turn_id": 7,
+        "question": "Do you prefer to keep snacks like chocolate and yogurt drinks near each other or scattered throughout the fridge?",
+        "answer": "Let's keep snacks like chocolate and yogurt drinks together for easier access. Place them on the middle shelf of the fridge."
+      },
+      {
+        "turn_id": 8,
+        "question": "Do you prefer to keep perishable items like milk, juice, and yogurt in the door bins or on the shelves for better visibility?",
+        "answer": "Let's keep perishable items like milk, juice, and yogurt in the door bins for easier access. Place the fresh milk jugs (fresh_milk.n.01_1 and fresh_milk.n.01_2), coconut juice (coconut_juice.n.01_1), small yogurt drinks (small_yogurt_drink.n.01_1, small_yogurt_drink.n.01_2, small_yogurt_drink.n.01_3), and boxed milk and yogurt in the door bins."
+      },
+      {
+        "turn_id": 9,
+        "question": "Do you prefer to keep similar-sized items together or mix them with different sized ones for a more varied look?",
+        "answer": "Let's keep similar-sized items together for easier organization and better use of space. For example, place the three small yogurt drinks (small_yogurt_drink.n.01_1, small_yogurt_drink.n.01_2, small_yogurt_drink.n.01_3) in a single bin or on adjacent shelves."
+      },
+      {
+        "turn_id": 10,
+        "question": "Do you have any specific section or item you would like to prioritize placing at eye level or easily accessible when opening the fridge door?",
+        "answer": "Let's prioritize placing the fresh milk jugs (fresh_milk.n.01_1 and fresh_milk.n.01_2) in the door bins, as they are essential items I need access to frequently."
+      }
+    ],
+    "goal": [
+      "(inside fresh_milk.n.01_1 door_right_bin_bottom)",
+      "(inside fresh_milk.n.01_2 door_right_bin_bottom)",
+      "(inside boxed_milk.n.01_1 door_right_bin_bottom)",
+      "(inside boxed_yogurt.n.01_1 door_right_bin_bottom)",
+      "(inside milk_cap_bottle.n.01_1 door_right_bin_bottom)",
+      "(inside coconut_juice.n.01_1 fridge_shelf_mid)",
+      "(inside small_juice.n.01_1 fridge_shelf_mid)",
+      "(inside water_bottle_plastic.n.01_1 door_left_bin_mid)",
+      "(inside water_bottle_glass.n.01_1 door_left_bin_mid)",
+      "(inside small_yogurt_drink.n.01_1 door_left_bin_top)",
+      "(inside small_yogurt_drink.n.01_2 door_left_bin_top)",
+      "(inside small_yogurt_drink.n.01_3 door_left_bin_top)",
+      "(inside cola_can.n.01_1 fridge_shelf_top)",
+      "(inside cola_can.n.01_2 fridge_shelf_top)",
+      "(inside ramen_pack.n.01_1 door_right_bin_bottom)",
+      "(inside ramen_pack.n.01_2 door_right_bin_bottom)",
+      "(inside chocolate.n.01_1 fridge_shelf_bottom)",
+      "(inside vinegar_bottle.n.01_1 fridge_shelf_bottom)",
+      "(inside hotpot_seasoning.n.01_1 fridge_shelf_bottom)",
+      "(inside chili_sauce_jar.n.01_1 fridge_shelf_bottom)",
+      "(inside chili_sauce_jar.n.01_2 fridge_shelf_bottom)",
+      "(inside lemon.n.01_1 fridge_drawer_left)",
+      "(inside lemon.n.01_2 fridge_drawer_left)",
+      "(inside orange.n.01_1 fridge_drawer_left)",
+      "(inside corn.n.01_2 fridge_drawer_left)",
+      "(inside tomato.n.01_1 fridge_drawer_left)",
+      "(inside corn.n.01_1 fridge_drawer_right)",
+      "(inside pear.n.01_1 fridge_drawer_right)",
+      "(inside avocado.n.01_1 fridge_drawer_right)",
+      "(inside hair_mud.n.01_1 fridge_shelf_mid)"
+    ],
+    "pred_goal": [
+      "(inside fresh_milk.n.01_1 door_left_bin_top)",
+      "(inside fresh_milk.n.01_2 door_right_bin_bottom)",
+      "(inside coconut_juice.n.01_1 fridge_shelf_top)",
+      "(inside water_bottle_plastic.n.01_1 door_left_bin_mid)",
+      "(inside water_bottle_glass.n.01_1 door_right_bin_top)",
+      "(inside small_yogurt_drink.n.01_1 fridge_shelf_mid)",
+      "(inside small_yogurt_drink.n.01_2 door_left_bin_top)",
+      "(inside small_yogurt_drink.n.01_3 door_right_bin_top)",
+      "(inside boxed_yogurt.n.01_1 fridge_shelf_bottom)",
+      "(inside boxed_milk.n.01_1 fridge_shelf_mid)",
+      "(inside milk_cap_bottle.n.01_1 door_right_bin_mid)",
+      "(inside cola_can.n.01_1 fridge_shelf_top)",
+      "(inside cola_can.n.01_2 fridge_shelf_top)",
+      "(inside small_juice.n.01_1 door_left_bin_mid)",
+      "(inside hair_mud.n.01_1 fridge_drawer_right)",
+      "(inside chocolate.n.01_1 fridge_shelf_mid)",
+      "(inside ramen_pack.n.01_1 fridge_shelf_mid)",
+      "(inside ramen_pack.n.01_2 fridge_drawer_left)",
+      "(inside vinegar_bottle.n.01_1 fridge_shelf_bottom)",
+      "(inside hotpot_seasoning.n.01_1 door_right_bin_bottom)",
+      "(inside chili_sauce_jar.n.01_1 fridge_shelf_mid)",
+      "(inside chili_sauce_jar.n.01_2 door_right_bin_bottom)",
+      "(inside lemon.n.01_1 fridge_drawer_left)",
+      "(inside lemon.n.01_2 fridge_shelf_bottom)",
+      "(inside corn.n.01_1 fridge_drawer_right)",
+      "(inside orange.n.01_1 fridge_drawer_left)",
+      "(inside tomato.n.01_1 fridge_shelf_bottom)",
+      "(inside corn.n.01_2 fridge_drawer_right)",
+      "(inside pear.n.01_1 fridge_drawer_left)",
+      "(inside avocado.n.01_1 fridge_shelf_mid)"
+    ],
+    "preference_eval": {
+      "metrics": {
+        "satisfaction": 0.3,
+        "precision": 0.3
+      },
+      "counts": {
+        "pred_total": 30,
+        "gt_total": 30,
+        "matched_gt": 9
+      }
+    }
+  }
+]

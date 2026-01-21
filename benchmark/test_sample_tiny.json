@@ -1,0 +1,77 @@
+[
+  {
+    "task": "organize_fridge",
+    "objects": {
+      "fresh_milk.n.01_1": "milk_jug.n.01",
+      "water_bottle_glass.n.01_1": "water_bottle.n.01",
+      "lemon.n.01_1": "lemon.n.01",
+      "ramen_pack.n.01_1": "food_pack.n.01",
+      "hair_mud.n.01_1": "cosmetic_container.n.01"
+    },
+    "receptacles": {
+      "fridge_shelf": "fridge_shelf",
+      "fridge_drawer": "fridge_drawer",
+      "door_left_bin": "door_left_bin",
+      "door_right_bin": "door_right_bin"
+    },
+    "init": [
+      "(inside fresh_milk.n.01_1 fridge_shelf)",
+      "(inside water_bottle_glass.n.01_1 fridge_shelf)",
+      "(inside lemon.n.01_1 fridge_shelf)",
+      "(inside ramen_pack.n.01_1 door_left_bin)",
+      "(inside hair_mud.n.01_1 fridge_drawer)"
+    ],
+    "qa_history": [
+      {
+        "turn_id": 1,
+        "question": "Do you prefer to keep beverages like milk and water together or separate them from other food items?",
+        "answer": "I prefer to keep beverages like milk and water together, but separate them from other food items for better organization. So, the milk should go in the door_right_bin and the water bottle in the door_left_bin."
+      },
+      {
+        "turn_id": 2,
+        "question": "Would you like to keep the lemon with the beverages or in the fridge drawer, considering its perishable nature?",
+        "answer": "I would prefer to keep the lemon in the fridge drawer. This keeps it separate from the beverages but still accessible and helps maintain better organization."
+      },
+      {
+        "turn_id": 3,
+        "question": "Should the ramen pack be stored in a specific location, or is it okay to leave it on the door shelf?",
+        "answer": "It's okay to leave the ramen pack on the door shelf. However, for better organization, I would prefer you to place it there."
+      },
+      {
+        "turn_id": 4,
+        "question": "Do you have any specific preferences for storing dairy products like milk, or can they be stored with other beverages?",
+        "answer": "I prefer to store dairy products like milk separately from other beverages for easier access and organization. So, the milk should go in the door_right_bin."
+      },
+      {
+        "turn_id": 5,
+        "question": "Would you like the cosmetic container to be stored with food items or in a separate section of the fridge?",
+        "answer": "I would prefer to store the cosmetic container in a separate section of the fridge, such as the fridge shelf. This keeps it away from food items and maintains better organization."
+      }
+    ],
+    "goal": [
+      "(inside fresh_milk.n.01_1 door_right_bin)",
+      "(inside water_bottle_glass.n.01_1 door_left_bin)",
+      "(inside lemon.n.01_1 fridge_drawer)",
+      "(inside ramen_pack.n.01_1 fridge_shelf)",
+      "(inside hair_mud.n.01_1 fridge_shelf)"
+    ],
+    "pred_goal": [
+      "(inside fresh_milk.n.01_1 door_right_bin)",
+      "(inside water_bottle_glass.n.01_1 door_left_bin)",
+      "(inside lemon.n.01_1 fridge_drawer)",
+      "(inside ramen_pack.n.01_1 fridge_shelf)",
+      "(inside hair_mud.n.01_1 fridge_drawer)"
+    ],
+    "preference_eval": {
+      "metrics": {
+        "satisfaction": 0.8,
+        "precision": 0.8
+      },
+      "counts": {
+        "pred_total": 5,
+        "gt_total": 5,
+        "matched_gt": 4
+      }
+    }
+  }
+]

@@ -80,7 +80,7 @@ class VLMAPI:
                     base64_image = base64.b64encode(image_file.read()).decode('utf-8')
 
         return base64_image
-    
+
 
     def vlm_request(self,
                     systext,
